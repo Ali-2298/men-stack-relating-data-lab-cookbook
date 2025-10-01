@@ -72,11 +72,12 @@ router.put('/:itemId', async (req, res) => {
 router.delete('/:itemId', async (req, res) => {
   try {
     const user = await User.findById(req.session.user._id);
-    user.pantry.deleteOne({ _id: req.params.itemId });
+    const item = user.pantry.id(req.params.itemId);
+    if (item) item.deleteOne(); 
     await user.save();
     res.redirect(`/users/${req.session.user._id}/foods`);
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     res.redirect('/');
   }
 });
